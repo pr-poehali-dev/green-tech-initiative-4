@@ -18,12 +18,12 @@ const CATEGORIES = [
 ]
 
 const MOVIES = [
-  { title: 'Дюна: Часть 2', year: '2024', genre: 'Фантастика' },
-  { title: 'Оппенгеймер', year: '2023', genre: 'Драма' },
-  { title: 'Мстители', year: '2023', genre: 'Боевик' },
-  { title: 'Интерстеллар', year: '2014', genre: 'Фантастика' },
-  { title: 'Достать ножи', year: '2019', genre: 'Триллер' },
-  { title: 'Паразиты', year: '2019', genre: 'Драма' },
+  { title: 'Дюна: Часть 2', year: '2024', genre: 'Фантастика', poster: 'https://cdn.poehali.dev/projects/6fc5da2f-3da4-4543-ba61-efded66119c1/files/fa6138ee-1c14-4737-bc93-35a89f5080d1.jpg' },
+  { title: 'Оппенгеймер', year: '2023', genre: 'Драма', poster: 'https://cdn.poehali.dev/projects/6fc5da2f-3da4-4543-ba61-efded66119c1/files/57d59f71-53f8-4e7d-9198-0cc138780766.jpg' },
+  { title: 'Мстители', year: '2023', genre: 'Боевик', poster: 'https://cdn.poehali.dev/projects/6fc5da2f-3da4-4543-ba61-efded66119c1/files/94e3de6f-4821-4e14-a446-f8dd9f54e1c8.jpg' },
+  { title: 'Интерстеллар', year: '2014', genre: 'Фантастика', poster: 'https://cdn.poehali.dev/projects/6fc5da2f-3da4-4543-ba61-efded66119c1/files/83320f88-2adc-49d1-9ac4-d8386b82d381.jpg' },
+  { title: 'Достать ножи', year: '2019', genre: 'Триллер', poster: 'https://cdn.poehali.dev/projects/6fc5da2f-3da4-4543-ba61-efded66119c1/files/c4094440-c389-417e-94d6-e1997e0c1b24.jpg' },
+  { title: 'Паразиты', year: '2019', genre: 'Драма', poster: 'https://cdn.poehali.dev/projects/6fc5da2f-3da4-4543-ba61-efded66119c1/files/a5840a40-72ae-4018-91bf-883168ee00d1.jpg' },
 ]
 
 export default function Dashboard({ userName, onLogout }: DashboardProps) {
@@ -105,10 +105,17 @@ export default function Dashboard({ userName, onLogout }: DashboardProps) {
                   transition={{ duration: 0.3, delay: 0.2 + i * 0.05 }}
                   className="group cursor-pointer"
                 >
-                  <div className="aspect-[2/3] rounded-xl bg-white/5 border border-white/10 group-hover:border-[#E50914] transition-all flex flex-col items-center justify-center mb-2 relative overflow-hidden">
-                    <Icon name="Play" size={28} className="text-white/20 group-hover:text-[#E50914] transition-colors" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
-                      <span className="text-white text-xs font-medium">Смотреть</span>
+                  <div className="aspect-[2/3] rounded-xl border border-white/10 group-hover:border-[#E50914] transition-all mb-2 relative overflow-hidden">
+                    <img
+                      src={movie.poster}
+                      alt={movie.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
+                      <div className="flex items-center gap-1">
+                        <Icon name="Play" size={14} className="text-white" />
+                        <span className="text-white text-xs font-medium">Смотреть</span>
+                      </div>
                     </div>
                   </div>
                   <p className="text-white text-sm font-medium truncate">{movie.title}</p>
