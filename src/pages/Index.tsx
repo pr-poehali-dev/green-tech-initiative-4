@@ -1,7 +1,11 @@
 import { LandingPage } from '@/components/landing'
 
-const Index = () => {
-  return <LandingPage />
+interface IndexProps {
+  onLogin: (name: string) => void
+}
+
+const Index = ({ onLogin }: IndexProps) => {
+  return <LandingPage onLogin={onLogin} />
 }
 
 export default Index

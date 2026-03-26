@@ -5,7 +5,11 @@ import Layout from './Layout'
 import RegisterModal from './RegisterModal'
 import { sections } from './sections'
 
-export default function LandingPage() {
+interface LandingPageProps {
+  onLogin: (name: string) => void
+}
+
+export default function LandingPage({ onLogin }: LandingPageProps) {
   const [activeSection, setActiveSection] = useState(0)
   const [showRegister, setShowRegister] = useState(false)
   const [userName, setUserName] = useState<string | null>(null)
@@ -49,7 +53,7 @@ export default function LandingPage() {
       <RegisterModal
         open={showRegister}
         onClose={() => setShowRegister(false)}
-        onSuccess={(name) => setUserName(name)}
+        onSuccess={(name) => { setUserName(name); setTimeout(() => onLogin(name), 2500) }}
       />
       {userName ? (
         <div className="fixed top-0 right-12 z-30 h-16 flex items-center gap-2">
