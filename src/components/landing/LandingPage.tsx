@@ -46,6 +46,12 @@ export default function LandingPage() {
   return (
     <Layout>
       <RegisterModal open={showRegister} onClose={() => setShowRegister(false)} />
+      <button
+        onClick={() => setShowRegister(true)}
+        className="fixed top-0 right-12 z-30 h-16 flex items-center text-sm font-medium text-white/70 hover:text-white transition-colors"
+      >
+        Войти
+      </button>
       <nav className="fixed top-0 right-0 h-screen flex flex-col justify-center z-30 p-4">
         {sections.map((section, index) => (
           <button
