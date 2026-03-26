@@ -8,6 +8,7 @@ export interface Movie {
   duration: string
   rating: string
   director: string
+  youtubeId: string
 }
 
 export const MOVIES: Movie[] = [
@@ -21,6 +22,7 @@ export const MOVIES: Movie[] = [
     duration: '2ч 46м',
     rating: '8.5',
     director: 'Дени Вильнёв',
+    youtubeId: 'Way9Dexny3w',
   },
   {
     id: 'oppenheimer',
@@ -32,6 +34,7 @@ export const MOVIES: Movie[] = [
     duration: '3ч 0м',
     rating: '8.9',
     director: 'Кристофер Нолан',
+    youtubeId: 'uYPbbksJxIg',
   },
   {
     id: 'avengers',
@@ -43,6 +46,7 @@ export const MOVIES: Movie[] = [
     duration: '2ч 23м',
     rating: '8.0',
     director: 'Джосс Уидон',
+    youtubeId: 'eOrNdBpGMv8',
   },
   {
     id: 'interstellar',
@@ -54,6 +58,7 @@ export const MOVIES: Movie[] = [
     duration: '2ч 49м',
     rating: '8.7',
     director: 'Кристофер Нолан',
+    youtubeId: 'zSWdZVtXT7E',
   },
   {
     id: 'knives-out',
@@ -65,6 +70,7 @@ export const MOVIES: Movie[] = [
     duration: '2ч 10м',
     rating: '7.9',
     director: 'Райан Джонсон',
+    youtubeId: 'qGqiHJTsRkQ',
   },
   {
     id: 'parasite',
@@ -76,5 +82,6 @@ export const MOVIES: Movie[] = [
     duration: '2ч 12м',
     rating: '8.5',
     director: 'Пон Джун-хо',
+    youtubeId: 'SEUXfv87Wpk',
   },
 ]

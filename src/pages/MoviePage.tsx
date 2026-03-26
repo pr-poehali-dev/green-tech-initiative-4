@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import Icon from '@/components/ui/icon'
 import { type Movie } from '@/data/movies'
@@ -9,6 +10,8 @@ interface MoviePageProps {
 }
 
 export default function MoviePage({ movie, onBack }: MoviePageProps) {
+  const [playing, setPlaying] = useState(false)
+
   return (
     <div className="h-screen overflow-hidden bg-black relative flex flex-col">
       {/* Фоновый постер с блюром */}
@@ -78,9 +81,10 @@ export default function MoviePage({ movie, onBack }: MoviePageProps) {
               <Button
                 size="lg"
                 className="bg-[#E50914] hover:bg-[#c1070f] text-white font-semibold px-8 gap-2"
+                onClick={() => setPlaying(true)}
               >
                 <Icon name="Play" size={18} />
-                Смотреть
+                Смотреть трейлер
               </Button>
               <Button
                 size="lg"
@@ -94,6 +98,40 @@ export default function MoviePage({ movie, onBack }: MoviePageProps) {
           </motion.div>
         </div>
       </main>
+
+      {/* YouTube-плеер */}
+      <AnimatePresence>
+        {playing && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <button
+              onClick={() => setPlaying(false)}
+              className="absolute top-6 right-6 text-white/60 hover:text-white transition-colors z-10"
+            >
+              <Icon name="X" size={28} />
+            </button>
+            <motion.div
+              className="w-full max-w-4xl aspect-video px-4"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <iframe
+                className="w-full h-full rounded-2xl"
+                src={`https://www.youtube.com/embed/${movie.youtubeId}?autoplay=1`}
+                title={movie.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
