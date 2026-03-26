@@ -8,12 +8,13 @@ import func2url from '../../../backend/func2url.json'
 interface RegisterModalProps {
   open: boolean
   onClose: () => void
+  onSuccess?: (name: string) => void
 }
 
 const INPUT_CLS = "bg-white/5 border-white/10 text-white placeholder:text-neutral-500 focus:border-[#E50914] h-12"
 const BTN_CLS = "w-full h-12 bg-[#E50914] hover:bg-[#c1070f] text-white font-semibold text-base"
 
-export default function RegisterModal({ open, onClose }: RegisterModalProps) {
+export default function RegisterModal({ open, onClose, onSuccess }: RegisterModalProps) {
   const [mode, setMode] = useState<'register' | 'login'>('register')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -56,6 +57,7 @@ export default function RegisterModal({ open, onClose }: RegisterModalProps) {
       } else {
         setSuccessName(data.name)
         setSuccess(true)
+        onSuccess?.(data.name)
         setTimeout(() => { handleClose() }, 2500)
       }
     } catch {
