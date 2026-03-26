@@ -2,10 +2,12 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import Icon from '@/components/ui/icon'
 import { Squares } from '@/components/landing/squares-background'
+import { MOVIES, type Movie } from '@/data/movies'
 
 interface DashboardProps {
   userName: string
   onLogout: () => void
+  onMovieSelect: (movie: Movie) => void
 }
 
 const CATEGORIES = [
@@ -17,16 +19,7 @@ const CATEGORIES = [
   { icon: 'Heart', label: 'Мелодрамы' },
 ]
 
-const MOVIES = [
-  { title: 'Дюна: Часть 2', year: '2024', genre: 'Фантастика', poster: 'https://cdn.poehali.dev/projects/6fc5da2f-3da4-4543-ba61-efded66119c1/files/fa6138ee-1c14-4737-bc93-35a89f5080d1.jpg' },
-  { title: 'Оппенгеймер', year: '2023', genre: 'Драма', poster: 'https://cdn.poehali.dev/projects/6fc5da2f-3da4-4543-ba61-efded66119c1/files/57d59f71-53f8-4e7d-9198-0cc138780766.jpg' },
-  { title: 'Мстители', year: '2023', genre: 'Боевик', poster: 'https://cdn.poehali.dev/projects/6fc5da2f-3da4-4543-ba61-efded66119c1/files/94e3de6f-4821-4e14-a446-f8dd9f54e1c8.jpg' },
-  { title: 'Интерстеллар', year: '2014', genre: 'Фантастика', poster: 'https://cdn.poehali.dev/projects/6fc5da2f-3da4-4543-ba61-efded66119c1/files/83320f88-2adc-49d1-9ac4-d8386b82d381.jpg' },
-  { title: 'Достать ножи', year: '2019', genre: 'Триллер', poster: 'https://cdn.poehali.dev/projects/6fc5da2f-3da4-4543-ba61-efded66119c1/files/c4094440-c389-417e-94d6-e1997e0c1b24.jpg' },
-  { title: 'Паразиты', year: '2019', genre: 'Драма', poster: 'https://cdn.poehali.dev/projects/6fc5da2f-3da4-4543-ba61-efded66119c1/files/a5840a40-72ae-4018-91bf-883168ee00d1.jpg' },
-]
-
-export default function Dashboard({ userName, onLogout }: DashboardProps) {
+export default function Dashboard({ userName, onLogout, onMovieSelect }: DashboardProps) {
   return (
     <div className="h-screen overflow-hidden bg-black relative">
       <div className="absolute inset-0 z-0 opacity-30">
@@ -99,17 +92,18 @@ export default function Dashboard({ userName, onLogout }: DashboardProps) {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {MOVIES.map((movie, i) => (
                 <motion.div
-                  key={movie.title}
+                  key={movie.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: 0.2 + i * 0.05 }}
                   className="group cursor-pointer"
+                  onClick={() => onMovieSelect(movie)}
                 >
                   <div className="aspect-[2/3] rounded-xl border border-white/10 group-hover:border-[#E50914] transition-all mb-2 relative overflow-hidden">
                     <img
                       src={movie.poster}
                       alt={movie.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
                       <div className="flex items-center gap-1">
