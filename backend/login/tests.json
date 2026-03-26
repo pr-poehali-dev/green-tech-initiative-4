@@ -1,0 +1,24 @@
+{
+  "tests": [
+    {
+      "name": "OPTIONS preflight",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Пустые поля — ошибка",
+      "method": "POST",
+      "path": "/",
+      "body": {"email": "", "password": ""},
+      "expectedStatus": 400
+    },
+    {
+      "name": "Неверные данные — ошибка",
+      "method": "POST",
+      "path": "/",
+      "body": {"email": "noone@example.com", "password": "wrongpass"},
+      "expectedStatus": 401
+    }
+  ]
+}

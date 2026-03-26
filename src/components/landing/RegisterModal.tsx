@@ -10,30 +10,53 @@ interface RegisterModalProps {
   onClose: () => void
 }
 
+const INPUT_CLS = "bg-white/5 border-white/10 text-white placeholder:text-neutral-500 focus:border-[#E50914] h-12"
+const BTN_CLS = "w-full h-12 bg-[#E50914] hover:bg-[#c1070f] text-white font-semibold text-base"
+
 export default function RegisterModal({ open, onClose }: RegisterModalProps) {
+  const [mode, setMode] = useState<'register' | 'login'>('register')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  const [successName, setSuccessName] = useState('')
+
+  const reset = () => {
+    setName(''); setEmail(''); setPassword(''); setError(''); setSuccess(false)
+  }
+
+  const switchMode = (m: 'register' | 'login') => {
+    setMode(m); reset()
+  }
+
+  const handleClose = () => {
+    onClose(); reset(); setMode('register')
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
     try {
-      const res = await fetch(func2url.register, {
+      const url = mode === 'register' ? func2url.register : func2url.login
+      const body = mode === 'register'
+        ? { name, email, password }
+        : { email, password }
+
+      const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password })
+        body: JSON.stringify(body)
       })
       const data = JSON.parse(await res.text())
       if (!res.ok) {
-        setError(data.error || 'Ошибка регистрации')
+        setError(data.error || 'Произошла ошибка')
       } else {
+        setSuccessName(data.name)
         setSuccess(true)
-        setTimeout(() => { onClose(); setSuccess(false) }, 2000)
+        setTimeout(() => { handleClose() }, 2500)
       }
     } catch {
       setError('Нет соединения с сервером')
@@ -51,7 +74,7 @@ export default function RegisterModal({ open, onClose }: RegisterModalProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={handleClose} />
           <motion.div
             className="relative bg-[#111] border border-white/10 rounded-2xl p-8 w-full max-w-md"
             initial={{ opacity: 0, y: 40, scale: 0.95 }}
@@ -60,65 +83,90 @@ export default function RegisterModal({ open, onClose }: RegisterModalProps) {
             transition={{ duration: 0.3 }}
           >
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors"
             >
               <Icon name="X" size={20} />
             </button>
 
-            <div className="mb-8">
+            <div className="mb-6">
               <h2 className="text-2xl font-bold text-white mb-1">
                 <span className="text-[#E50914]">Кино</span>микс
               </h2>
-              <p className="text-neutral-400">Создайте аккаунт и начните смотреть</p>
+              <p className="text-neutral-400">
+                {mode === 'register' ? 'Создайте аккаунт и начните смотреть' : 'Войдите в свой аккаунт'}
+              </p>
+            </div>
+
+            {/* Переключатель режима */}
+            <div className="flex bg-white/5 rounded-xl p-1 mb-6">
+              <button
+                onClick={() => switchMode('register')}
+                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${mode === 'register' ? 'bg-[#E50914] text-white' : 'text-neutral-400 hover:text-white'}`}
+              >
+                Регистрация
+              </button>
+              <button
+                onClick={() => switchMode('login')}
+                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${mode === 'login' ? 'bg-[#E50914] text-white' : 'text-neutral-400 hover:text-white'}`}
+              >
+                Войти
+              </button>
             </div>
 
             {success ? (
               <div className="text-center py-8">
                 <div className="text-4xl mb-3">🎬</div>
-                <p className="text-white font-semibold text-lg">Добро пожаловать!</p>
-                <p className="text-neutral-400 mt-1">Аккаунт создан успешно</p>
+                <p className="text-white font-semibold text-lg">Добро пожаловать, {successName}!</p>
+                <p className="text-neutral-400 mt-1">
+                  {mode === 'register' ? 'Аккаунт создан успешно' : 'Вы успешно вошли'}
+                </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
-                <Input
-                  placeholder="Ваше имя"
-                  value={name}
-                  onChange={e => setName(e.target.value)}
-                  required
-                  className="bg-white/5 border-white/10 text-white placeholder:text-neutral-500 focus:border-[#E50914] h-12"
-                />
+                <AnimatePresence mode="wait">
+                  {mode === 'register' && (
+                    <motion.div
+                      key="name"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Input
+                        placeholder="Ваше имя"
+                        value={name}
+                        onChange={e => setName(e.target.value)}
+                        required
+                        className={INPUT_CLS}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
                 <Input
                   type="email"
                   placeholder="Email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   required
-                  className="bg-white/5 border-white/10 text-white placeholder:text-neutral-500 focus:border-[#E50914] h-12"
+                  className={INPUT_CLS}
                 />
                 <Input
                   type="password"
-                  placeholder="Пароль (минимум 6 символов)"
+                  placeholder={mode === 'register' ? 'Пароль (минимум 6 символов)' : 'Пароль'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
-                  className="bg-white/5 border-white/10 text-white placeholder:text-neutral-500 focus:border-[#E50914] h-12"
+                  className={INPUT_CLS}
                 />
                 {error && <p className="text-red-400 text-sm">{error}</p>}
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full h-12 bg-[#E50914] hover:bg-[#c1070f] text-white font-semibold text-base mt-2"
-                >
-                  {loading ? 'Регистрация...' : 'Начать смотреть'}
+                <Button type="submit" disabled={loading} className={BTN_CLS}>
+                  {loading
+                    ? (mode === 'register' ? 'Регистрация...' : 'Вход...')
+                    : (mode === 'register' ? 'Начать смотреть' : 'Войти')}
                 </Button>
               </form>
             )}
-
-            <p className="text-center text-neutral-500 text-sm mt-6">
-              Уже есть аккаунт?{' '}
-              <button className="text-[#E50914] hover:underline">Войти</button>
-            </p>
           </motion.div>
         </motion.div>
       )}
