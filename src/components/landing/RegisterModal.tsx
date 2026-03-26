@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import Icon from '@/components/ui/icon'
+import func2url from '../../../backend/func2url.json'
 
 interface RegisterModalProps {
   open: boolean
@@ -13,10 +14,32 @@ export default function RegisterModal({ open, onClose }: RegisterModalProps) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    onClose()
+    setError('')
+    setLoading(true)
+    try {
+      const res = await fetch(func2url.register, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      })
+      const data = JSON.parse(await res.text())
+      if (!res.ok) {
+        setError(data.error || 'Ошибка регистрации')
+      } else {
+        setSuccess(true)
+        setTimeout(() => { onClose(); setSuccess(false) }, 2000)
+      }
+    } catch {
+      setError('Нет соединения с сервером')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -50,8 +73,14 @@ export default function RegisterModal({ open, onClose }: RegisterModalProps) {
               <p className="text-neutral-400">Создайте аккаунт и начните смотреть</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
+            {success ? (
+              <div className="text-center py-8">
+                <div className="text-4xl mb-3">🎬</div>
+                <p className="text-white font-semibold text-lg">Добро пожаловать!</p>
+                <p className="text-neutral-400 mt-1">Аккаунт создан успешно</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <Input
                   placeholder="Ваше имя"
                   value={name}
@@ -59,8 +88,6 @@ export default function RegisterModal({ open, onClose }: RegisterModalProps) {
                   required
                   className="bg-white/5 border-white/10 text-white placeholder:text-neutral-500 focus:border-[#E50914] h-12"
                 />
-              </div>
-              <div>
                 <Input
                   type="email"
                   placeholder="Email"
@@ -69,24 +96,24 @@ export default function RegisterModal({ open, onClose }: RegisterModalProps) {
                   required
                   className="bg-white/5 border-white/10 text-white placeholder:text-neutral-500 focus:border-[#E50914] h-12"
                 />
-              </div>
-              <div>
                 <Input
                   type="password"
-                  placeholder="Пароль"
+                  placeholder="Пароль (минимум 6 символов)"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
                   className="bg-white/5 border-white/10 text-white placeholder:text-neutral-500 focus:border-[#E50914] h-12"
                 />
-              </div>
-              <Button
-                type="submit"
-                className="w-full h-12 bg-[#E50914] hover:bg-[#c1070f] text-white font-semibold text-base mt-2"
-              >
-                Начать смотреть
-              </Button>
-            </form>
+                {error && <p className="text-red-400 text-sm">{error}</p>}
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full h-12 bg-[#E50914] hover:bg-[#c1070f] text-white font-semibold text-base mt-2"
+                >
+                  {loading ? 'Регистрация...' : 'Начать смотреть'}
+                </Button>
+              </form>
+            )}
 
             <p className="text-center text-neutral-500 text-sm mt-6">
               Уже есть аккаунт?{' '}
