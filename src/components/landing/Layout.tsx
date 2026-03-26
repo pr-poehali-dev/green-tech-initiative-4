@@ -17,6 +17,11 @@ export default function Layout({ children }: LayoutProps) {
           hoverFillColor="#222"
         />
       </div>
+      <header className="fixed top-0 left-0 z-30 p-6">
+        <span className="text-2xl font-bold tracking-tight">
+          <span className="text-[#E50914]">Кино</span><span className="text-white">микс</span>
+        </span>
+      </header>
       <div className="relative z-20 h-full">
         {children}
       </div>
